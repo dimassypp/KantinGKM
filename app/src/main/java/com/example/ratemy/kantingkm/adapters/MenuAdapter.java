@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.ratemy.kantingkm.R;
 import com.example.ratemy.kantingkm.models.MenuItem;
 import com.example.ratemy.kantingkm.models.OrderItem;
@@ -67,27 +69,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             holder.tvPrice.setText(String.format("Rp. %,.0f", menuItem.getPrice()));
         }
 
-        if (holder.ivFoodImage != null) {
-            try {
-                if (menuItem.getImageBase64() != null && !menuItem.getImageBase64().isEmpty()) {
-                    Bitmap bitmap = base64ToBitmap(menuItem.getImageBase64());
-                    if (bitmap != null) {
-                        holder.ivFoodImage.setImageBitmap(bitmap);
-                    } else {
-                        holder.ivFoodImage.setImageResource(R.drawable.food);
-                    }
-                } else if (menuItem.getImageUrl() != null && !menuItem.getImageUrl().isEmpty()) {
-                    Glide.with(context).load(menuItem.getImageUrl()).into(holder.ivFoodImage);
-                } else {
-                    holder.ivFoodImage.setImageResource(R.drawable.food);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading image for menu item: " + menuItem.getName(), e);
-                holder.ivFoodImage.setImageResource(R.drawable.food);
-            }
-        } else {
-            Log.w(TAG, "ivFoodImage is null in ViewHolder");
-        }
+        loadMenuImage(holder, menuItem);
 
         OrderItem selectedItem = getSelectedItem(menuItem.getId());
         if (selectedItem != null) {
@@ -133,11 +115,88 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             holder.btnMinus.setOnClickListener(v -> {
                 decreaseQuantity(menuItem.getId());
                 notifyItemChanged(position);
-                // Notify listener ketika quantity berkurang
                 if (quantityChangeListener != null) {
                     quantityChangeListener.onQuantityChanged();
                 }
             });
+        }
+    }
+
+    private void loadMenuImage(MenuViewHolder holder, MenuItem menuItem) {
+        if (holder.ivFoodImage == null) {
+            Log.w(TAG, "ivFoodImage is null in ViewHolder");
+            return;
+        }
+
+        try {
+            if (menuItem.getImageBase64() != null && !menuItem.getImageBase64().trim().isEmpty()) {
+                Log.d(TAG, "Loading base64 image for: " + menuItem.getName());
+
+                Bitmap bitmap = base64ToBitmap(menuItem.getImageBase64());
+                if (bitmap != null) {
+                    holder.ivFoodImage.setImageBitmap(bitmap);
+                    Log.d(TAG, "Successfully loaded base64 image for: " + menuItem.getName());
+                    return;
+                } else {
+                    Log.w(TAG, "Failed to decode base64 image for: " + menuItem.getName());
+                }
+            }
+
+            if (menuItem.getImageUrl() != null && !menuItem.getImageUrl().trim().isEmpty()) {
+                Log.d(TAG, "Loading URL image for: " + menuItem.getName() + " from: " + menuItem.getImageUrl());
+
+                RequestOptions options = new RequestOptions()
+                        .placeholder(R.drawable.food)
+                        .error(R.drawable.food)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop();
+
+                Glide.with(context)
+                        .load(menuItem.getImageUrl())
+                        .apply(options)
+                        .into(holder.ivFoodImage);
+                return;
+            }
+
+            Log.d(TAG, "No image data available for: " + menuItem.getName() + ", using default image");
+            holder.ivFoodImage.setImageResource(R.drawable.food);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading image for menu item: " + menuItem.getName(), e);
+            holder.ivFoodImage.setImageResource(R.drawable.food);
+        }
+    }
+
+    private Bitmap base64ToBitmap(String base64String) {
+        try {
+            if (base64String == null || base64String.trim().isEmpty()) {
+                Log.w(TAG, "Base64 string is null or empty");
+                return null;
+            }
+
+            // Remove any data URL prefix if present
+            String cleanBase64 = base64String;
+            if (base64String.contains(",")) {
+                cleanBase64 = base64String.substring(base64String.indexOf(",") + 1);
+            }
+
+            // Decode base64 string
+            byte[] decodedBytes = Base64.decode(cleanBase64, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+
+            if (bitmap != null) {
+                Log.d(TAG, "Successfully decoded base64 to bitmap. Size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
+            } else {
+                Log.w(TAG, "Failed to decode base64 to bitmap - decoded bytes length: " + decodedBytes.length);
+            }
+
+            return bitmap;
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Invalid base64 string", e);
+            return null;
+        } catch (Exception e) {
+            Log.e(TAG, "Error converting base64 to bitmap", e);
+            return null;
         }
     }
 
@@ -152,19 +211,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
     public boolean hasSelectedItems() {
         return selectedItems != null && !selectedItems.isEmpty();
-    }
-
-    private Bitmap base64ToBitmap(String base64String) {
-        try {
-            if (base64String == null || base64String.isEmpty()) {
-                return null;
-            }
-            byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private OrderItem getSelectedItem(String menuId) {

@@ -278,10 +278,8 @@ public class ProfilePenjualActivity extends AppCompatActivity {
         canteen.put("ownerId", userId);
         canteen.put("imageUrl", "");
 
-        // First create the canteen
         mDatabase.child("canteens").child(newCanteenId).setValue(canteen)
                 .addOnSuccessListener(aVoid -> {
-                    // Then update the user with the canteenId
                     mDatabase.child("users").child(userId).child("canteenId").setValue(newCanteenId)
                             .addOnSuccessListener(aVoid1 -> {
                                 canteenId = newCanteenId;
@@ -388,7 +386,6 @@ public class ProfilePenjualActivity extends AppCompatActivity {
     }
 
     private void redirectToLogin() {
-        Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, com.example.ratemy.kantingkm.activities.LoginPenjualActivity.class));
         finish();
     }
