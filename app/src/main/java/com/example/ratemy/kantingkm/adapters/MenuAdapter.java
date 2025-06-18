@@ -91,6 +91,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             }
         }
 
+        // Set button click listeners
         if (holder.btnAdd != null) {
             holder.btnAdd.setOnClickListener(v -> {
                 addItemToOrder(menuItem);
@@ -129,8 +130,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         }
 
         try {
+            Log.d(TAG, "Loading image for menu item: " + menuItem.getName());
+
+            holder.ivFoodImage.setImageResource(R.drawable.food);
+
             if (menuItem.getImageBase64() != null && !menuItem.getImageBase64().trim().isEmpty()) {
-                Log.d(TAG, "Loading base64 image for: " + menuItem.getName());
+                Log.d(TAG, "Attempting to load base64 image for: " + menuItem.getName());
 
                 Bitmap bitmap = base64ToBitmap(menuItem.getImageBase64());
                 if (bitmap != null) {
@@ -143,23 +148,25 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             }
 
             if (menuItem.getImageUrl() != null && !menuItem.getImageUrl().trim().isEmpty()) {
-                Log.d(TAG, "Loading URL image for: " + menuItem.getName() + " from: " + menuItem.getImageUrl());
+                Log.d(TAG, "Attempting to load URL image for: " + menuItem.getName() + " from: " + menuItem.getImageUrl());
 
                 RequestOptions options = new RequestOptions()
                         .placeholder(R.drawable.food)
                         .error(R.drawable.food)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .centerCrop();
+                        .centerCrop()
+                        .timeout(10000);
 
                 Glide.with(context)
                         .load(menuItem.getImageUrl())
                         .apply(options)
                         .into(holder.ivFoodImage);
+
+                Log.d(TAG, "Glide load initiated for: " + menuItem.getName());
                 return;
             }
 
             Log.d(TAG, "No image data available for: " + menuItem.getName() + ", using default image");
-            holder.ivFoodImage.setImageResource(R.drawable.food);
 
         } catch (Exception e) {
             Log.e(TAG, "Error loading image for menu item: " + menuItem.getName(), e);
@@ -168,41 +175,55 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
     }
 
     private Bitmap base64ToBitmap(String base64String) {
+        if (base64String == null || base64String.isEmpty()) {
+            return null;
+        }
+
         try {
-            if (base64String == null || base64String.trim().isEmpty()) {
-                Log.w(TAG, "Base64 string is null or empty");
-                return null;
-            }
-
-            // Remove any data URL prefix if present
             String cleanBase64 = base64String;
-            if (base64String.contains(",")) {
-                cleanBase64 = base64String.substring(base64String.indexOf(",") + 1);
+            if (base64String.startsWith("data:image")) {
+                int commaIndex = base64String.indexOf(",");
+                if (commaIndex > 0) {
+                    cleanBase64 = base64String.substring(commaIndex + 1);
+                }
             }
 
-            // Decode base64 string
             byte[] decodedBytes = Base64.decode(cleanBase64, Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
 
             if (bitmap != null) {
-                Log.d(TAG, "Successfully decoded base64 to bitmap. Size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
-            } else {
-                Log.w(TAG, "Failed to decode base64 to bitmap - decoded bytes length: " + decodedBytes.length);
+                // Resize to optimize memory usage
+                bitmap = resizeBitmap(bitmap, 800, 600);
             }
 
             return bitmap;
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Invalid base64 string", e);
-            return null;
         } catch (Exception e) {
             Log.e(TAG, "Error converting base64 to bitmap", e);
             return null;
         }
     }
 
+    private Bitmap resizeBitmap(Bitmap originalBitmap, int maxWidth, int maxHeight) {
+        int width = originalBitmap.getWidth();
+        int height = originalBitmap.getHeight();
+
+        float ratioBitmap = (float) width / (float) height;
+        float ratioMax = (float) maxWidth / (float) maxHeight;
+
+        int finalWidth = maxWidth;
+        int finalHeight = maxHeight;
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (int) ((float) maxHeight * ratioBitmap);
+        } else {
+            finalHeight = (int) ((float) maxWidth / ratioBitmap);
+        }
+
+        return Bitmap.createScaledBitmap(originalBitmap, finalWidth, finalHeight, true);
+    }
+
     @Override
     public int getItemCount() {
-        return menuList.size();
+        return menuList != null ? menuList.size() : 0;
     }
 
     public List<OrderItem> getSelectedItems() {
@@ -214,6 +235,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
     }
 
     private OrderItem getSelectedItem(String menuId) {
+        if (selectedItems == null) return null;
+
         for (OrderItem item : selectedItems) {
             if (item.getMenuId().equals(menuId)) {
                 return item;
@@ -229,12 +252,15 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         orderItem.setPrice(menuItem.getPrice());
         orderItem.setQuantity(1);
         selectedItems.add(orderItem);
+
+        Log.d(TAG, "Added item to order: " + menuItem.getName());
     }
 
     private void increaseQuantity(String menuId) {
         for (OrderItem item : selectedItems) {
             if (item.getMenuId().equals(menuId)) {
                 item.setQuantity(item.getQuantity() + 1);
+                Log.d(TAG, "Increased quantity for: " + item.getName() + " to " + item.getQuantity());
                 break;
             }
         }
@@ -246,11 +272,32 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             if (item.getMenuId().equals(menuId)) {
                 if (item.getQuantity() > 1) {
                     item.setQuantity(item.getQuantity() - 1);
+                    Log.d(TAG, "Decreased quantity for: " + item.getName() + " to " + item.getQuantity());
                 } else {
                     selectedItems.remove(i);
+                    Log.d(TAG, "Removed item from order: " + item.getName());
                 }
                 break;
             }
+        }
+    }
+
+    public void updateMenuList(List<MenuItem> newMenuList) {
+        if (this.menuList == null) {
+            this.menuList = new ArrayList<>();
+        }
+
+        this.menuList.clear();
+        this.menuList.addAll(newMenuList);
+        notifyDataSetChanged();
+        Log.d(TAG, "Menu list updated with " + newMenuList.size() + " items");
+    }
+
+    public void clearSelectedItems() {
+        if (selectedItems != null) {
+            selectedItems.clear();
+            notifyDataSetChanged();
+            Log.d(TAG, "Selected items cleared");
         }
     }
 
@@ -274,18 +321,18 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
                 btnMinus = itemView.findViewById(R.id.btnMinus);
                 quantityLayout = itemView.findViewById(R.id.quantityLayout);
 
-                if (ivFoodImage == null) Log.w("MenuAdapter", "ivFoodImage is null - check R.id.iv_food_image in item_menu.xml");
-                if (tvTitle == null) Log.w("MenuAdapter", "tvTitle is null - check R.id.tvTitle in item_menu.xml");
-                if (tvDescription == null) Log.w("MenuAdapter", "tvDescription is null - check R.id.tvDescription in item_menu.xml");
-                if (tvPrice == null) Log.w("MenuAdapter", "tvPrice is null - check R.id.tvPrice in item_menu.xml");
-                if (tvQuantity == null) Log.w("MenuAdapter", "tvQuantity is null - check R.id.tvQuantity in item_menu.xml");
-                if (btnAdd == null) Log.w("MenuAdapter", "btnAdd is null - check R.id.btnAdd in item_menu.xml");
-                if (btnPlus == null) Log.w("MenuAdapter", "btnPlus is null - check R.id.btnPlus in item_menu.xml");
-                if (btnMinus == null) Log.w("MenuAdapter", "btnMinus is null - check R.id.btnMinus in item_menu.xml");
-                if (quantityLayout == null) Log.w("MenuAdapter", "quantityLayout is null - check R.id.quantityLayout in item_menu.xml");
+                if (ivFoodImage == null) Log.w(TAG, "ivFoodImage is null - check R.id.iv_food_image in item_menu.xml");
+                if (tvTitle == null) Log.w(TAG, "tvTitle is null - check R.id.tvTitle in item_menu.xml");
+                if (tvDescription == null) Log.w(TAG, "tvDescription is null - check R.id.tvDescription in item_menu.xml");
+                if (tvPrice == null) Log.w(TAG, "tvPrice is null - check R.id.tvPrice in item_menu.xml");
+                if (tvQuantity == null) Log.w(TAG, "tvQuantity is null - check R.id.tvQuantity in item_menu.xml");
+                if (btnAdd == null) Log.w(TAG, "btnAdd is null - check R.id.btnAdd in item_menu.xml");
+                if (btnPlus == null) Log.w(TAG, "btnPlus is null - check R.id.btnPlus in item_menu.xml");
+                if (btnMinus == null) Log.w(TAG, "btnMinus is null - check R.id.btnMinus in item_menu.xml");
+                if (quantityLayout == null) Log.w(TAG, "quantityLayout is null - check R.id.quantityLayout in item_menu.xml");
 
             } catch (Exception e) {
-                Log.e("MenuAdapter", "Error initializing ViewHolder", e);
+                Log.e(TAG, "Error initializing ViewHolder", e);
             }
         }
     }
