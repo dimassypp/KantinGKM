@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="orange">#F46600</color>
+    <color name="blue">#3182BD</color>
+    <color name="colorPrimary">#FF5722</color>
+    <color name="darker_gray">#A9A9A9</color>
+    <color name="background">#FAFAFA</color>
+    <color name="buttonDanger">#C61E00</color>
+    <color name="buttonWarning">#EDCA00</color>
+    <color name="buttonPrimary">#3182BD</color>
+    <color name="buttonSuccess">#008234</color>
+
+</resources>

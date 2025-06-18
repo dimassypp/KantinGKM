@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "614683810003",
+    "project_id": "kantingkm",
+    "storage_bucket": "kantingkm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614683810003:android:d7c1236658eb12826f1c26",
+        "android_client_info": {
+          "package_name": "com.example.ratemy.kantingkm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAawGRIeyNhTy6-yBPeHlTpnC9eryggkA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

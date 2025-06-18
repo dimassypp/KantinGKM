@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="16dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/textViewOrderTitle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Incoming Order"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:fontFamily="@font/montserratsemibold"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/textViewStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ready"
+                    android:textColor="#888888"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/montserratmedium"/>
+
+                <TextView
+                    android:id="@+id/textViewTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="09:00"
+                    android:textColor="#888888"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/montserratmedium"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Order Items -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/textViewItem1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2x Tahu Isi"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:layout_marginBottom="2dp"
+                android:fontFamily="@font/montserratmedium"/>
+
+            <TextView
+                android:id="@+id/textViewItem2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1x Sosis Solo"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserratmedium"/>
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonCancel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:text="Cancel"
+                android:textColor="@android:color/white"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/buttonDanger"
+                android:layout_marginEnd="3dp"
+                android:fontFamily="@font/montserratmedium"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonProcess"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:text="Process"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/buttonWarning"
+                android:layout_marginHorizontal="3dp"
+                android:fontFamily="@font/montserratmedium"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonReady"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:text="Ready"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/buttonPrimary"
+                android:layout_marginHorizontal="3dp"
+                android:fontFamily="@font/montserratmedium"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonComplete"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:text="Complete"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/buttonSuccess"
+                android:layout_marginStart="3dp"
+                android:fontFamily="@font/montserratmedium"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

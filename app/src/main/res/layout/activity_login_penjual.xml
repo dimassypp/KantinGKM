@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="367dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="22dp"
+    android:layout_marginTop="200dp"
+    android:gravity="center"
+    android:background="@color/background">
+
+    <ImageView
+        android:id="@+id/imageViewLogoPenjual"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:layout_marginTop="-100dp"
+        app:srcCompat="@drawable/logokantingkmpenjual" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="-30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to "
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:fontFamily="@font/montserratsemibold"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KantinGKM!"
+            android:textColor="#3182BD"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserratsemibold"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manage orders easily, quickly and efficiently in one place."
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/montserratmedium"/>
+
+    <!-- Email -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxStrokeColor="#FF5722">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmailPenjual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Email"
+            android:textSize="12sp"
+            android:inputType="textEmailAddress"
+            android:fontFamily="@font/montserratmedium"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Password -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxStrokeColor="#FF5722"
+        app:endIconMode="password_toggle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPasswordPenjual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Password"
+            android:textSize="12sp"
+            android:inputType="textPassword"
+            android:fontFamily="@font/montserratmedium"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnLoginPenjual"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="@color/blue"
+        android:padding="15dp"
+        android:text="Login"
+        android:textColor="#FFFFFF"
+        android:fontFamily="@font/montserratsemibold"
+        app:cornerRadius="8dp" />
+
+    <TextView
+        android:id="@+id/textViewSignInCustomer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign in as Customer"
+        android:textAlignment="textEnd"
+        android:textColor="#F46600"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/montserratmedium"/>
+
+</LinearLayout>

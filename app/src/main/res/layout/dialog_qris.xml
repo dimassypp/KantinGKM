@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginStart="22dp"
+    android:layout_marginEnd="22dp"
+    android:paddingTop="32dp"
+    android:paddingBottom="32dp"
+    android:paddingLeft="28dp"
+    android:paddingRight="28dp"
+    android:background="@color/white"
+    android:gravity="center_horizontal">
+
+    <!-- Payment Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment"
+        android:textColor="#FF6B35"
+        android:textSize="20sp"
+        android:fontFamily="@font/montserratsemibold"
+        android:layout_marginBottom="24dp" />
+
+    <!-- QR Code -->
+    <ImageView
+        android:layout_width="275dp"
+        android:layout_height="314dp"
+        android:src="@drawable/qr_code_sample"
+        android:scaleType="fitCenter"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Done Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Done"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/montserratsemibold"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        app:backgroundTint="#FF6B35"
+        app:cornerRadius="8dp"
+        />
+
+</LinearLayout>
